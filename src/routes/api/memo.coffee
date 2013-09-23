@@ -8,8 +8,10 @@ exports.write = (req, res) ->
     console.log("#{error}")
 
 exports.list = (req, res) ->
-  memo.get (err, data) ->
-    console.log err if err
-    data.forEach (doc) ->
-      console.log(doc)
-    res.send 200
+  res.set 'Content-Type', 'applicationres/json'
+  memo.read (err, data) ->
+    if err
+      res.send 503
+    if !data
+      res.send 404
+    res.send JSON.stringify(data)

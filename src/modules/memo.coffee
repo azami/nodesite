@@ -12,9 +12,15 @@ process.on 'SIGINT', ->
 Schema = mongoose.Schema
 
 memoSchema = new Schema {
-  title: String
-  article: String
-  img: Buffer
+  title: {
+    type: String
+    required: true
+  }
+  article: {
+    type: String
+    required: true
+  }
+  pic: String
   datetime: {
     type: Date
     default: Date.now
@@ -30,12 +36,9 @@ onError = (err, callback) ->
 exports.write = (params) ->
     new Memo(params).save((err) -> done(err) if err)
 
-exports.fetch = (callback, limit=10, sort=1) ->
+exports.read = (callback, limit=10, skip=1) ->
   Memo.find({})\
     .sort({datetime: -1})\
     .skip(skip - 1)\
     .limit(limit)\
-    .exec((err, data) ->
-      for d in data
-        console.log d
-    )
+    .exec(callback)
